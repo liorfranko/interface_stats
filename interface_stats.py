@@ -36,23 +36,15 @@ if __name__ == '__main__':
         test = CiscoSshClient()
         test.do_add_host(address+','+options.username+','+options.password)
         test.do_connect(test)
-        res = test.do_run('sho ip int br')
         stats_list = {address: {}}
-        l = []
-        for rr in res:
-            l = rr.splitlines()
-        for w in l:
-            int_name = w.split()[0]
-            if int_name in interfaces:
-                if ('administratively' and 'down' not in w) and 'up' in w:
-
-                    test2 = test.do_run('sho int ' + int_name)
-                    for t in test2:
-                        te = t.split('\r\n')
-                        for tte in te:
-                            if 'input rate' in tte:
-                                stats_list[address][int_name] = int(tte.split()[4])
+        for int_name in i['interfaces']:
+            test2 = test.do_run('sho int ' + int_name)
+            for t in test2:
+                for tte in t:
+                    if 'input rate' in tte:
+                        stats_list[address][int_name] = int(tte.split()[4])
         print i['dc'], i['name']
+
         for key, value in stats_list[address].items():
             if 1000 < value < 1000000:
                 print key + ' ' + str(value/1000) + " Kbits/sec"
@@ -63,4 +55,4 @@ if __name__ == '__main__':
             else:
                     print key + ' ' + str(value) + " bits/sec"
 
-    test.do_close(test)
+        test.do_close(test)

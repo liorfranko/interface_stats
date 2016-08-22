@@ -43,7 +43,8 @@ class CiscoSshClient:
             while not buff.endswith('#'):
                 resp = chan.recv(9999)
                 buff += resp
-            all_data.append(buff)
+            data = buff.splitlines()
+            all_data.append(data)
         return all_data
 
     def do_close(self, args):
