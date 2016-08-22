@@ -2,65 +2,9 @@
 __author__ = 'liorf'
 
 import yaml
-import paramiko
 import sys
 from optparse import OptionParser
-
-
-class RunCommand:
-    def __init__(self):
-        self.hosts = []
-        self.connections = []
-
-    def do_add_host(self, args):
-        """add_host
-        Add the host to the host list"""
-        if args:
-            self.hosts.append(args.split(','))
-        else:
-            print "usage: host "
-
-    def do_connect(self, args):
-        """Connect to all hosts in the hosts list"""
-        for host in self.hosts:
-            client = paramiko.SSHClient()
-            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            client.connect(host[0],
-                           username=host[1],
-                           password=host[2])
-
-            chan = client.invoke_shell()
-            chan.keep_this = client
-            self.connections.append(chan)
-            buff = ''
-            while not buff.endswith('#'):
-                resp = chan.recv(9999)
-                buff += resp
-            chan.send('ter len 0' + "\n")
-            buff = ''
-            while not buff.endswith('#'):
-                resp = chan.recv(9999)
-                buff += resp
-
-    def do_run(self, command):
-        """run
-        Execute this command on all hosts in the list"""
-        if command:
-            all_data = []
-            for host, chan in zip(self.hosts, self.connections):
-                buff = ''
-                chan.send(command + '\n')
-                while not buff.endswith('#'):
-                    resp = chan.recv(9999)
-                    buff += resp
-                all_data.append(buff)
-            return all_data
-        else:
-            print "usage: run "
-
-    def do_close(self, args):
-        for conn in self.connections:
-            conn.close()
+from cisco_ssh_client import CiscoSshClient
 
 
 def open_yaml():
@@ -89,7 +33,7 @@ if __name__ == '__main__':
     for i in yaml_file['devices']:
         address = i['address']
         interfaces = i['interfaces']
-        test = RunCommand()
+        test = CiscoSshClient()
         test.do_add_host(address+','+options.username+','+options.password)
         test.do_connect(test)
         res = test.do_run('sho ip int br')
@@ -119,3 +63,4 @@ if __name__ == '__main__':
             else:
                     print key + ' ' + str(value) + " bits/sec"
 
+    test.do_close(test)
