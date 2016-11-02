@@ -1,6 +1,22 @@
 devices:
-#  - dc:
-#    name:
-#    address:
+  - dc: uk
+    name: asr_1
+    address: 10.32.31.231
+    interfaces:
+      - Te0/2/0
+      - Te1/3/0
+  - dc: uk
+    name: asr_2
+    address: 10.32.31.232
+    interfaces:
+      - Te1/3/0
+#  - dc: nl
+#    name: asr_1
+#    address: 10.48.31.231
 #    interfaces:
-#      -
+#      - Te0/2/0
+#  - dc: nl
+#    name: asr_2
+#    address: 10.48.31.232
+#    interfaces:
+#      - Te0/3/0

@@ -44,7 +44,6 @@ if __name__ == '__main__':
                     if 'input rate' in tte:
                         stats_list[address][int_name] = int(tte.split()[4])
         print i['dc'], i['name']
-
         for key, value in stats_list[address].items():
             if 1000 < value < 1000000:
                 print key + ' ' + str(value/1000) + " Kbits/sec"

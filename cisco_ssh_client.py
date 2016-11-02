@@ -38,6 +38,7 @@ class CiscoSshClient:
         Execute this command on all hosts in the list"""
         all_data = []
         for host, chan in zip(self.hosts, self.connections):
+            all_data.append(host[0])
             buff = ''
             chan.send(command + '\n')
             while not buff.endswith('#'):
